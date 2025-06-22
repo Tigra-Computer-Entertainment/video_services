@@ -11,7 +11,7 @@
 #include "materialsystem/imaterial.h"
 #include "filesystem.h"
 #include "tier0/platform.h"
-#include "tier1/KeyValues.h"
+#include "tier1/keyvalues.h"
 #include "tier1/utlbuffer.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
@@ -106,7 +106,7 @@ CVideoMaterial::CVideoMaterial()
 
 	m_pAudioDevice = nullptr;
 	m_pAudioBuffer = nullptr;
-#ifdef _LINUX
+#if defined(_LINUX) || defined(MACOS) || defined(FREEBSD)
 	m_pSDLAudioStream = nullptr;
 #elif _WIN32
 	m_directSoundNotify = nullptr;
@@ -202,7 +202,7 @@ bool CVideoMaterial::LoadVideo( const char *pMaterialName, const char *pVideoFil
 	}
 	
 	// assign the decoder a reasonable number of threads
-	const CPUInformation& cpuInfo = *GetCPUInformation();
+	const CPUInformation& cpuInfo = GetCPUInformation();
 	unsigned int numthreads = clamp( cpuInfo.m_nLogicalProcessors - 2, 1, 8 );
 	m_videoDecoder = new VPXDecoder( *m_demuxer, numthreads );
 	m_audioDecoder = new OpusVorbisDecoder( *m_demuxer );
@@ -228,7 +228,7 @@ bool CVideoMaterial::CreateSoundBuffer( void* pSoundDevice )
 		return false;
 	}
 
-#ifdef _LINUX
+#if defined(_LINUX) || defined(MACOS) || defined(FREEBSD)
 	// todo; Error checking
 
 	// this is a copy recieved from services so we don't need to allocate it
@@ -478,7 +478,7 @@ void CVideoMaterial::DestroySoundBuffer()
 	if ( !m_pAudioBuffer )
 		return;
 
-#ifdef _LINUX
+#if defined(_LINUX) || defined(MACOS) || defined(FREEBSD)
 	if ( m_pSDLAudioStream )
 		SDL_FreeAudioStream( m_pSDLAudioStream );
 	m_pSDLAudioStream = nullptr;
@@ -780,7 +780,7 @@ bool CVideoMaterial::Update()
 
 				IDirectSoundBuffer_Unlock( m_pAudioBuffer, pAudioPtr, dwAudioBytes1, NULL, NULL );
 			}
-#elif _LINUX
+#elif defined(_LINUX) || defined(MACOS) || defined(FREEBSD)
 			SDL_AudioStreamPut(m_pSDLAudioStream, m_pcm, nBytesRead);
 #endif
 
@@ -864,7 +864,7 @@ bool CVideoMaterial::HasAudio()
 
 bool CVideoMaterial::SetVolume( float fVolume )
 {
-	m_volume = min( 1.0f, max( 0.0f, fVolume ) );
+	m_volume = MIN( 1.0f, MAX( 0.0f, fVolume ) );
 	if ( !m_pAudioBuffer )
 		return false;
 
@@ -873,7 +873,7 @@ bool CVideoMaterial::SetVolume( float fVolume )
 	float log_volume = pow( m_volume, 0.2 );
 	IDirectSoundBuffer_SetVolume( m_pAudioBuffer, ( LONG )( -10000 * ( 1.0f - log_volume ) ) );
 	return true;
-#elif _LINUX
+#elif defined(_LINUX) || defined(FREEBSD) || defined(MACOS)
 	return true;
 #else
 	return false;
@@ -905,7 +905,7 @@ VideoResult_t CVideoMaterial::SoundDeviceCommand( VideoSoundDeviceOperation_t op
 		CreateSoundBuffer( pDevice );
 		return VideoResult_t::SUCCESS;
 	}
-#elif _LINUX
+#elif defined(_LINUX) || defined(MACOS) || defined(FREEBSD)
 	// Maybe called when changing audio device?
 	if( operation == VideoSoundDeviceOperation_t::SET_SDL_SOUND_DEVICE )
 	{

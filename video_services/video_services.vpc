@@ -75,8 +75,8 @@ $Project "Video Services"
 		$Lib $LIBVIDEO\dsound [$WIN32]
 		$Lib $LIBVIDEO\dxguid [$WIN32]
 		
-		$Lib $LIBVIDEO\libvorbis [$LINUX]
-		$Lib $LIBVIDEO\libopus [$LINUX]
-		$Lib $LIBVIDEO\libogg [$LINUX]
+		$Lib $LIBVIDEO\libvorbis [$POSIX]
+		$Lib $LIBVIDEO\libopus [$POSIX]
+		$Lib $LIBVIDEO\libogg [$POSIX]
 	}
 }

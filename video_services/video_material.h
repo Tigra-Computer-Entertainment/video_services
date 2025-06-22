@@ -16,7 +16,7 @@
 #ifdef _WIN32
 #include <windows.h>
 #include "dsound.h"
-#elif _LINUX
+#elif defined(_LINUX) || defined(MACOS) || defined(FREEBSD)
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_audio.h"
 #endif
@@ -199,7 +199,7 @@ private:
 	unsigned int m_currentFrame;
 	CUtlQueue< WebMFrame*> m_videoFrames;
 
-#ifdef _LINUX
+#if defined(_LINUX) || defined(FREEBSD) || defined(MACOS)
 	SDL_AudioSpec* m_pAudioDevice;
 	Uint8* m_pAudioBuffer;
 
