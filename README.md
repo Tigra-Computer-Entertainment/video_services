@@ -4,7 +4,7 @@ A functional work in progress drop-in replacement for Source SDK 2013's video se
 This is intended for standalone Source engine mods released on Steam. This can be used for standard sourcemods but sound playback will not work out of the box without some additional work.
 
 # Rationale
-The version of Source provided to modders on Windows and Linux only has support for Bink video playback, which isn't well suited for HD video. There is also the issue of licensing as Bink is a proprietary codec, so despite it being provided with Source you're not actually allowed to use it in mods on Steam unless you acquire a license.
+The version of Source provided to modders on Windows, Linux and macOS only has support for Bink video playback (and FreeBSD doesn't even have it), which isn't well suited for HD video. There is also the issue of licensing as Bink is a proprietary codec, so despite it being provided with Source you're not actually allowed to use it in mods on Steam unless you acquire a license.
 
 The primary reason for having written this is that at the time of writing I'm a developer for the infamous _game_ Hunt Down the Freeman. The game makes heavy use of cutscenes and as Bink was the only option, that's what was used. This resulted in about 6.6GB of video of accept quality, for an hour's worth of content. The same content encoded using VP9 and Opus only takes up a little over 900MB. So about 13%-16% of the original size for equal or, in most cases, better quality. The only instance of lower quality I noticed was in dark scenes, but that's likely due to the absurd bitrate initially used for the Bink versions.
 
